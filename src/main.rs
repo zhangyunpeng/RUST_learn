@@ -1,5 +1,5 @@
-use learn::practice;
 
 fn main() {
-    practice::pass::run();
+    learn::base::loops::run();
 }
+
