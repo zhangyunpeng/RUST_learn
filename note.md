@@ -112,3 +112,16 @@ while condition {}
 while let pattern = value {}
 ```
 
+## 元组
+1. 使用 ref 或 元组引用，避免部分所有权被转移
+
+## 结构体
+1. Tuple struct 例: ``` struct A(i32, String) ```
+2. Named struct 例: ``` struct Person { name: String, age: u8} ```
+3. Unit struct  例: ``` struct D() ```
+
+结构体默认不实现 Copy Trait， 即使它的所有成员都实现了 Copy Trait, 需要通过 ```#[derive(Copy, Clone)] ```实现，实现Copy必须同时实现Clone, 同样只有所有成员都实现了 Copy， 才可以为结构体派生 Copy  
+``` #[derive(Default)] ``` 为结构体派生默认值实现   
+
+
+
