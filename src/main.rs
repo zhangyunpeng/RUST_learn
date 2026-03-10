@@ -1,5 +1,3 @@
-
 fn main() {
-    learn::base::options::run();
+    learn::practice::simple_weather::run();
 }
-

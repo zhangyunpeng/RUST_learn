@@ -1,14 +1,9 @@
-
-
 pub fn run() {
     demo_for();
 }
 
 fn demo_for() {
-    let mut arr = [
-        "hello".to_string(),
-        "world".to_string(), 
-    ];
+    let mut arr = ["hello".to_string(), "world".to_string()];
     // for item in arr {
     //     println!("item: {}", item);
     // }
@@ -25,7 +20,7 @@ fn demo_for() {
         println!("item: {}", item);
     }
 
-    for item in &mut arr{
+    for item in &mut arr {
         item.push_str("abc");
     }
     println!("arr: {:?}", arr);

@@ -1,4 +1,3 @@
-
 pub fn run() {
     demo();
 }
@@ -7,8 +6,11 @@ fn demo() {
     let arr = [1, 2, 3, 4, 5];
     println!("{:?}", find_val(&arr, 3));
     println!("{:?}", find_val(&arr, 6));
+    match find_val(&arr, 5) {
+        Some(index) => println!("position: {}", index),
+        None => println!("Not found"),
+    }
 }
-
 
 /*
     find_val 多版本

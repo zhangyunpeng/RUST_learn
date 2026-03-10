@@ -1,4 +1,3 @@
-
 pub fn run() {
     demo2();
 }
@@ -7,7 +6,7 @@ pub fn run() {
 fn demo2() {
     let the_date = (
         "Monday".to_string(),
-        25, 
+        25,
         "June".to_string(),
         "2026".to_string(),
     );
@@ -22,17 +21,15 @@ fn demo2() {
     match the_date {
         // ref 关键字
         (ref d, ..) if d == "Sunday" => println!("It's sunday"),
-        _ => println!("other")
+        _ => println!("other"),
     }
 
-     match &the_date {
+    match &the_date {
         // ref 关键字
         (d, ..) if d == "Sunday" => println!("It's sunday"),
-        _ => println!("other")
+        _ => println!("other"),
     }
     println!("date: {:?}", the_date);
-
-
 }
 
 fn demo() {
@@ -45,28 +42,28 @@ fn demo() {
     match rcvd_data {
         (a, b, c) if a > 0 && c < 20 => {
             println!("Valid data");
-        },
+        }
         _ => println!("Invalid data"),
     }
 
     match rcvd_data {
         (_, "hello", _) => {
             println!("hello data");
-        },
+        }
         _ => println!("no hello data"),
     }
 
     match rcvd_data {
         (_, _, _c @ 1..100) => {
             println!("valid c data");
-        },
+        }
         _ => println!("invalid c data"),
     }
 
     match rcvd_data {
         (_a @ 1..100, ..) => {
             println!("valid a data");
-        },
+        }
         _ => println!("invalid a data"),
     }
 }

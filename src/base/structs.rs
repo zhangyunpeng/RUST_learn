@@ -1,5 +1,3 @@
-
-
 pub fn run() {
     demo1();
 }
@@ -29,7 +27,7 @@ fn demo1() {
     println!("{}", name);
     // println!("{:?}", p); // err p.name的所有权 被转移给了name
     p.name = "sun2".to_string();
-    println!("{:?}", p); 
+    println!("{:?}", p);
 
     let p = Person::default();
     let p1 = Person {
@@ -41,5 +39,4 @@ fn demo1() {
 
     let w = Wife(p, p1);
     println!("{:?}", w);
-
 }

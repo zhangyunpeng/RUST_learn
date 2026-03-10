@@ -16,11 +16,11 @@ use std::io;
 4.至少1个来自[$#@]的字符
 ™帔鰭犄磣岽痨易密码最小长度:6
 6.交易密码最大长度:12
-输入新密码:<用户输入密码>重新输入新密码:<用户输入相同的密码> 
+输入新密码:<用户输入密码>重新输入新密码:<用户输入相同的密码>
 结果：/强/不匹配/密码更改成功/失败
 */
 
-pub fn run () {
+pub fn run() {
     println!("##### 设置新密码 #####");
     loop {
         match change_password() {
@@ -53,14 +53,14 @@ fn change_password() -> Result<(), String> {
     let second_input = second_input.trim();
 
     if first_input != second_input {
-        return Err("两次输入密码不一致".to_string())
+        return Err("两次输入密码不一致".to_string());
     }
 
     validate_password(first_input)?;
 
     let strength = evaluate_password_strength(first_input);
     println!("密码强度: {}", strength);
-    
+
     Ok(())
 }
 
@@ -68,9 +68,7 @@ fn get_user_input(propmt: &str) -> String {
     println!("{}", propmt);
 
     let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("读取输入失败");
+    io::stdin().read_line(&mut input).expect("读取输入失败");
     input
 }
 
@@ -78,17 +76,25 @@ type ValidatePasswordFn = fn(char) -> bool;
 
 fn validate_password(password: &str) -> Result<(), String> {
     if password.len() < 6 {
-        return Err(format!("密码长度不足：需要至少6个字符，实际为{}个字符", password.len()))
+        return Err(format!(
+            "密码长度不足：需要至少6个字符，实际为{}个字符",
+            password.len()
+        ));
     }
     if password.len() > 12 {
-        return Err(format!("密码太长：需要至多12个字符，实际为{}个字符", password.len()))
+        return Err(format!(
+            "密码太长：需要至多12个字符，实际为{}个字符",
+            password.len()
+        ));
     }
-    
+
     let checks: [(&str, ValidatePasswordFn); 4] = [
         ("小写字母[a-z]", |c: char| c.is_ascii_lowercase()),
         ("大写字母[A-Z]", |c: char| c.is_ascii_uppercase()),
         ("数字[0-9]", |c: char| c.is_ascii_digit()),
-        ("特殊字符[$, @, #]", |c: char| ['#', '@', '$'].contains(&c)),
+        ("特殊字符[$, @, #]", |c: char| {
+            ['#', '@', '$'].contains(&c)
+        }),
     ];
     let mut errs = Vec::new();
     for (name, check) in checks.iter() {
@@ -98,7 +104,7 @@ fn validate_password(password: &str) -> Result<(), String> {
     }
     if !errs.is_empty() {
         let err_msg = errs.join("\n");
-        return Err(format!("密码不符合要求{}", err_msg))
+        return Err(format!("密码不符合要求{}", err_msg));
     }
     Ok(())
 }
@@ -112,10 +118,12 @@ fn evaluate_password_strength(password: &str) -> &'static str {
         ("小写字母[a-z]", |c: char| c.is_ascii_lowercase()),
         ("大写字母[A-Z]", |c: char| c.is_ascii_uppercase()),
         ("数字[0-9]", |c: char| c.is_ascii_digit()),
-        ("特殊字符[$, @, #]", |c: char| ['#', '@', '$'].contains(&c)),
+        ("特殊字符[$, @, #]", |c: char| {
+            ['#', '@', '$'].contains(&c)
+        }),
     ];
 
-    for (_, check) in  checks.iter() {
+    for (_, check) in checks.iter() {
         if password.chars().any(check) {
             criteria_met += 1;
         }
@@ -126,7 +134,7 @@ fn evaluate_password_strength(password: &str) -> &'static str {
         (len, 4) if len >= 8 => "中",
         (len, 3) if len >= 8 => "中",
         (len, _) if len >= 6 => "弱",
-        _ => "弱"
+        _ => "弱",
     }
 }
 
@@ -157,7 +165,12 @@ mod tests {
             ("Abc1234", "缺少特殊字符"),
         ];
         for (pass, reason) in invalid_passwords.iter() {
-            assert!(validate_password(pass).is_err(), "密码 '{}' 无效， 原因 '{}'", pass, reason);
+            assert!(
+                validate_password(pass).is_err(),
+                "密码 '{}' 无效， 原因 '{}'",
+                pass,
+                reason
+            );
         }
     }
 

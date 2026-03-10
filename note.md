@@ -122,6 +122,9 @@ while let pattern = value {}
 
 结构体默认不实现 Copy Trait， 即使它的所有成员都实现了 Copy Trait, 需要通过 ```#[derive(Copy, Clone)] ```实现，实现Copy必须同时实现Clone, 同样只有所有成员都实现了 Copy， 才可以为结构体派生 Copy  
 ``` #[derive(Default)] ``` 为结构体派生默认值实现   
-
+## 向量
+### vs array
+1. array 存储在栈上，不可修改其大小
+2. vec 存储在堆上， 可动态调整大小
 
 
