@@ -19,19 +19,21 @@ pub fn run() {
             Ok(1) => add_city_weather(&mut sws).unwrap(),
             Ok(2) => display_city_weather(&mut sws).unwrap(),
             Ok(3) => update_city_weather(&mut sws).unwrap(),
-            _ => {continue;}
+            _ => {
+                continue;
+            }
         }
     }
 }
 
-fn update_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
+fn update_city_weather(sws: &mut WeatherStation) -> Result<(), String> {
     println!("请输入城市:");
     let city = get_user_input();
     let city = city.trim().to_string();
 
     if sws.find_city(city.as_str()).is_none() {
         println!("No city");
-        return Ok(())
+        return Ok(());
     }
 
     println!("请输入温度:");
@@ -45,16 +47,15 @@ fn update_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
     println!("请输入天气:");
     let condition = get_weather_condition()?;
 
-    sws.add_city(CityWeather { 
-        city, 
-        weather:  Weather::new(temperature, humidity, condition)
+    sws.add_city(CityWeather {
+        city,
+        weather: Weather::new(temperature, humidity, condition),
     });
 
     Ok(())
-    
 }
 
-fn display_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
+fn display_city_weather(sws: &mut WeatherStation) -> Result<(), String> {
     println!("请输入城市:");
     let city = get_user_input();
     let city = city.trim().to_string();
@@ -62,13 +63,13 @@ fn display_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
     match sws.find_city(city.as_str()) {
         Some(cw) => {
             println!("{}", cw.display());
-        },
+        }
         None => println!("No city"),
-    } 
+    }
     Ok(())
 }
 
-fn add_city_weather(sws: &mut WeatherStation) -> Result<(), String>{
+fn add_city_weather(sws: &mut WeatherStation) -> Result<(), String> {
     println!("请输入城市:");
     let city = get_user_input();
     let city = city.trim().to_string();
@@ -84,13 +85,12 @@ fn add_city_weather(sws: &mut WeatherStation) -> Result<(), String>{
     println!("请输入天气:");
     let condition = get_weather_condition()?;
 
-    sws.add_city(CityWeather { 
-        city, 
-        weather:  Weather::new(temperature, humidity, condition)
+    sws.add_city(CityWeather {
+        city,
+        weather: Weather::new(temperature, humidity, condition),
     });
 
     Ok(())
-
 }
 
 fn get_weather_condition() -> Result<WeatherCondition, String> {
@@ -100,7 +100,10 @@ fn get_weather_condition() -> Result<WeatherCondition, String> {
         "cloudy" => Ok(WeatherCondition::Cloudy),
         "rainy" => Ok(WeatherCondition::Rainy),
         "snowy" => Ok(WeatherCondition::Snowy),
-        _ => Err(format!("无效的天气条件: {}. 请输入 sunny/cloudy/rainy/snowy", input.trim())),
+        _ => Err(format!(
+            "无效的天气条件: {}. 请输入 sunny/cloudy/rainy/snowy",
+            input.trim()
+        )),
     }
 }
 
@@ -113,17 +116,17 @@ fn display_menu() {
 3. 更新天气报告
 ===========================================
 请输入您的选择 (0-3): "#;
-    
+
     println!("{}", MENU);
 }
 
-
 fn get_user_input_choice() -> Result<u8, String> {
     let input = get_user_input();
-    input.trim()
+    input
+        .trim()
         .parse::<u8>()
-        .map_err(|_|format!("无效数字: {}", input))
-        .and_then(|n|{
+        .map_err(|_| format!("无效数字: {}", input))
+        .and_then(|n| {
             if n <= 3 {
                 Ok(n)
             } else {
@@ -231,7 +234,7 @@ impl WeatherStation {
         self.cities.iter().find(|cw| cw.city == city)
     }
     fn list_cites(&self) -> String {
-        if self.cities.is_empty(){
+        if self.cities.is_empty() {
             return "empty citys".to_string();
         }
         self.cities

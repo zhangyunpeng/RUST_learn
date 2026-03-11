@@ -1,6 +1,5 @@
 use std::collections::VecDeque;
 
-
 pub fn run() {
     demo();
 }
@@ -21,16 +20,18 @@ fn demo() {
 
     let mut v = VecDeque::new();
     v.extend(1..5);
-    v.retain(|x|x%2==0);
+    v.retain(|x| x % 2 == 0);
     assert_eq!(v, [2, 4]);
 
     let mut v = VecDeque::new();
     v.extend(1..5);
-    v.retain_mut(|x| if &*x % 2 == 0 {
-        *x *= 2;
-        true
-    } else {
-        false
+    v.retain_mut(|x| {
+        if &*x % 2 == 0 {
+            *x *= 2;
+            true
+        } else {
+            false
+        }
     });
     assert_eq!(v, [4, 8]);
 }

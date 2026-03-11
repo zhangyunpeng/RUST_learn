@@ -153,7 +153,17 @@ extend() 扩展, 同上，但会转移 other的所有权
 5. remove
 6. entry  or_insert and_modify
 
-
+## 错误处理
+1. Result<T, E> 处理可能的失败
+2. panic 不可恢复的错误
+3. Option<T> 处理 T 不存在的情况
+4. ? 错误传播, 错误类型自动转换（存在From实现）
+### 标准错误
+1. io Error
+    std::io::Error
+2. number Error
+3. formating and data validation Error
+4. Network Error
 
 
 

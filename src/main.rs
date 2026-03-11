@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::hashmaps::run();
+    learn::base::lifetimes::run();
 }

@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-
 pub fn run() {
     demo2();
 }
@@ -23,10 +22,10 @@ fn count_word(s: &str) -> HashMap<&str, usize> {
     let mut h = HashMap::new();
 
     s.split_whitespace()
-        .map(|word|word.trim_matches(|c: char|c.is_ascii_punctuation()))
-        .filter(|word|!word.is_empty())
-        .for_each(|word|{
-            h.entry(word).and_modify(|n|*n += 1).or_insert(1);
+        .map(|word| word.trim_matches(|c: char| c.is_ascii_punctuation()))
+        .filter(|word| !word.is_empty())
+        .for_each(|word| {
+            h.entry(word).and_modify(|n| *n += 1).or_insert(1);
         });
     h
 }
@@ -58,11 +57,10 @@ fn demo() {
     println!("{:?}", h);
 
     h.entry("k2".to_string())
-        .and_modify(|v|*v="v22".to_string())
+        .and_modify(|v| *v = "v22".to_string())
         .or_insert("v2".to_string());
     h.entry("k4".to_string())
-        .and_modify(|v|*v="v44".to_string())
+        .and_modify(|v| *v = "v44".to_string())
         .or_insert("v4".to_string());
     println!("{:?}", h);
-    
 }
