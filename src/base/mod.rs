@@ -5,3 +5,5 @@ pub mod structs;
 pub mod tuples;
 pub mod val_and_ref;
 pub mod vecs;
+pub mod vecdeques;
+pub mod hashmaps;

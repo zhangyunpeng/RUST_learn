@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::vecs::run();
+    learn::base::hashmaps::run();
 }
