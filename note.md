@@ -126,5 +126,24 @@ while let pattern = value {}
 ### vs array
 1. array 存储在栈上，不可修改其大小
 2. vec 存储在堆上， 可动态调整大小
+### funcs
+drain() 排空指定范围 参数为Range  
+extract_if 剔除制定范围中，满足条件的元素 ``` extract_if(.., |x|x%2==0) ``` 返回迭代器  
+retain(&mut self, f: FnMut(&T)->bool) 保留指定元素  
+retain_mut()  
+split_at() split_at_mut() 按照索引分割， 区别在于后者返回可变引用  
+split_at_unchecked split_at_mut_unchecked 非安全的按照索引切割， 不进行边界检查， 区别在于后者返回可变引用  
+split() 返回一个迭代器，该迭代器遍历由匹配元素分割的子切片。 匹配的元素不包含在子切片中   
+rsplit() 同split(), 迭代返回顺序从右开始  
+splitn() 返回一个迭代器，该迭代器遍历由匹配 pred 的元素分隔的子切片，最多返回 n 个子切片。匹配的元素不包含在子切片中。如果还有剩余元素，则最后一个返回的子切片将包含切片的剩余部分。  
+rsplitn() 同split(), 迭代返回顺序从右开始 
+splice() 创建一个拼接迭代器，将向量中指定范围替换为给定的 replace_with迭代器，并返回被移除的元素  
+append() 移除 other 中所有元素，追加到self  
+extend() 扩展, 同上，但会转移 other的所有权
+
+## VecDeque
+一个使用可增长环形缓冲区实现的双端队列。  
+该类型作为队列的“默认”用法是使用 push_back添加到队列，使用 pop_front从队列中移除。extend和 append以这种方式从尾部添加元素，而迭代 VecDeque则是从前到后进行。  
+
 
 
