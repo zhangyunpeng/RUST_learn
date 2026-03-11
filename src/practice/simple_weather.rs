@@ -17,16 +17,61 @@ pub fn run() {
         match get_user_input_choice() {
             Ok(0) => println!("{}", sws.list_cites()),
             Ok(1) => add_city_weather(&mut sws).unwrap(),
-            Ok(2) => {todo!()},
-            Ok(3) => {todo!()},
+            Ok(2) => display_city_weather(&mut sws).unwrap(),
+            Ok(3) => update_city_weather(&mut sws).unwrap(),
             _ => {continue;}
         }
     }
 }
 
+fn update_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
+    println!("请输入城市:");
+    let city = get_user_input();
+    let city = city.trim().to_string();
+
+    if sws.find_city(city.as_str()).is_none() {
+        println!("No city");
+        return Ok(())
+    }
+
+    println!("请输入温度:");
+    let temperature = get_user_input();
+    let temperature = temperature.trim().parse::<u8>().expect("无效的温度");
+
+    println!("请输入湿度:");
+    let humidity = get_user_input();
+    let humidity = humidity.trim().parse::<u8>().expect("无效的湿度");
+
+    println!("请输入天气:");
+    let condition = get_weather_condition()?;
+
+    sws.add_city(CityWeather { 
+        city, 
+        weather:  Weather::new(temperature, humidity, condition)
+    });
+
+    Ok(())
+    
+}
+
+fn display_city_weather(sws: &mut WeatherStation) ->Result<(), String> {
+    println!("请输入城市:");
+    let city = get_user_input();
+    let city = city.trim().to_string();
+
+    match sws.find_city(city.as_str()) {
+        Some(cw) => {
+            println!("{}", cw.display());
+        },
+        None => println!("No city"),
+    } 
+    Ok(())
+}
+
 fn add_city_weather(sws: &mut WeatherStation) -> Result<(), String>{
     println!("请输入城市:");
     let city = get_user_input();
+    let city = city.trim().to_string();
 
     println!("请输入温度:");
     let temperature = get_user_input();
@@ -161,7 +206,8 @@ impl CityWeather {
         self.weather = weather
     }
     fn display(&self) -> String {
-        format!("City: {} {}", self.city, self.weather.disply())
+        // println!("len: {}", self.city.len());
+        format!("City:{} {}", self.city, self.weather.disply())
     }
 }
 
