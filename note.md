@@ -93,7 +93,7 @@ rust 不允许在运行时写入非法内存
 |:---:|:---:|
 |!|Not|
 |&|BitAnd|
-|```|```|BitOr|
+|`|`|BitOr|
 |<<|Shl|
 |>>|Shr|
 |^|BitXor|
@@ -144,6 +144,15 @@ extend() 扩展, 同上，但会转移 other的所有权
 ## VecDeque
 一个使用可增长环形缓冲区实现的双端队列。  
 该类型作为队列的“默认”用法是使用 push_back添加到队列，使用 pop_front从队列中移除。extend和 append以这种方式从尾部添加元素，而迭代 VecDeque则是从前到后进行。  
+
+## HashMap
+1. insert
+2. contain_key
+3. keys
+4. values
+5. remove
+6. entry  or_insert and_modify
+
 
 
 
