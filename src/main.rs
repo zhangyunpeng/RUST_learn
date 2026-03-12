@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::lifetimes::run();
+    learn::base::traits::run();
 }

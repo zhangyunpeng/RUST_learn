@@ -11,3 +11,4 @@ pub mod tuples;
 pub mod val_and_ref;
 pub mod vecdeques;
 pub mod vecs;
+pub mod traits;

@@ -165,5 +165,8 @@ extend() 扩展, 同上，但会转移 other的所有权
 3. formating and data validation Error
 4. Network Error
 
+## trait
+Rust中的特征是一组可以由任何类型实现的方法签名集合。
+
 
 
