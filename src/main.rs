@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::traits::run();
+    learn::base::colurses::run();
 }

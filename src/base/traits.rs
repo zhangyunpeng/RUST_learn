@@ -1,7 +1,5 @@
 use std::{f64::consts::PI, fmt::Display, ops::Mul};
 
-
-
 pub fn run() {
     demo2();
 }
@@ -27,7 +25,7 @@ impl Display for Dog {
         let mut w: usize = 8;
         if let Some(width) = f.width() {
             w = width
-        } 
+        }
         writeln!(f, "{:#^w$}", "Dog details", w = w * 2 + 1)?;
         writeln!(f, "{:<w$}:{:<w$}", "Weight", self.weight)?;
         writeln!(f, "{:<w$}:{:<w$}", "Age", self.age)?;
@@ -46,8 +44,9 @@ struct Rectangle<T> {
     height: T,
 }
 
-impl<T> Shape for Rectangle<T> 
-    where T: Mul<Output = T> + Copy
+impl<T> Shape for Rectangle<T>
+where
+    T: Mul<Output = T> + Copy,
 {
     type Item = T;
     fn area(&self) -> Self::Item {
@@ -56,11 +55,12 @@ impl<T> Shape for Rectangle<T>
 }
 
 struct Circle<T> {
-    radius: T
+    radius: T,
 }
 
 impl<T> Shape for Circle<T>
-    where T: Mul<Output = T> +  Copy + From<f32> + From<f64>
+where
+    T: Mul<Output = T> + Copy + From<f32> + From<f64>,
 {
     type Item = T;
     fn area(&self) -> Self::Item {
@@ -74,18 +74,13 @@ fn exec_area<T>(s: &dyn Shape<Item = T>) -> T {
 }
 
 fn demo2() {
-    let r = Rectangle{
+    let r = Rectangle {
         width: 10,
         height: 20,
     };
     println!("{:?}", r.area());
-    let c = Circle {
-        radius: 2.0,
-    };
+    let c = Circle { radius: 2.0 };
     println!("{:?}", c.area());
     println!("{:?}", exec_area(&r));
     println!("{:?}", exec_area(&c));
-
-    
 }
-
