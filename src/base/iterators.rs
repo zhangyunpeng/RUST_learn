@@ -119,11 +119,10 @@ impl<'a> Iterator for BookingOnDate<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         while self.index < self.all_booking.len() {
             let booking = self.all_booking.index(self.index);
+            self.index += 1;
             if booking.date == self.date {
-                self.index += 1;
                 return Some(booking);
             }
-            self.index += 1;
         }
         None
     }
