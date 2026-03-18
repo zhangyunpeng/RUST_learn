@@ -1,7 +1,7 @@
 use std::ops::Index;
 
 pub fn run() {
-    demo2();
+    demo3();
 }
 
 fn demo() {
@@ -139,3 +139,84 @@ impl<'a> Iterator for BookingOnDateMut<'a> {
         Some(item)
     }
 }
+
+fn demo3() {
+    let all_tasks = [Task::new("task1".to_string(), Priority::Low),
+        Task::new("task2".to_string(), Priority::High),
+        Task::new("task3".to_string(), Priority::Medium),
+        Task::new("task4".to_string(), Priority::High),
+        Task::new("task5".to_string(), Priority::Low)];
+    let iter = PriorityIterator::new(&all_tasks);
+    for item in iter {
+        println!("{:?}: {:?}", item.name, item.priority);
+    }
+}
+
+#[derive(Debug, PartialEq)]
+enum Priority {
+    High,
+    Medium,
+    Low,
+}
+
+#[derive(Debug)]
+struct Task {
+    name: String,
+    priority: Priority,
+}
+
+impl Task {
+    fn new(name: String, priority: Priority) -> Self {
+        Self { name, priority }
+    }
+}
+
+struct PriorityIterator<'a> {
+    all_tasks: &'a [Task],
+    current_priority: Priority,
+    next_index: usize,
+}
+
+impl<'a> PriorityIterator<'a> {
+    fn new(all_tasks: &'a [Task]) -> Self {
+        Self {
+            all_tasks,
+            current_priority: Priority::High,
+            next_index: 0,
+        }
+    }
+
+    fn find_next_in_current_priority(&mut self) -> Option<&'a Task> {
+        while self.next_index < self.all_tasks.len() {
+            let task = &self.all_tasks[self.next_index];
+            self.next_index += 1;
+            if task.priority == self.current_priority {
+                return Some(task);
+            }
+        }
+        None
+    }
+
+    fn switch_to_current_priority(&mut self) -> Option<()> {
+        self.current_priority = match self.current_priority {
+            Priority::High => Priority::Medium,
+            Priority::Medium => Priority::Low,
+            Priority::Low => return None,
+        };
+        self.next_index = 0;
+        Some(())
+    }
+}
+
+impl<'a> Iterator for PriorityIterator<'a> {
+    type Item = &'a Task;
+    fn next(&mut self) -> Option<Self::Item> {
+        let task = self.find_next_in_current_priority();
+        if task.is_some() {
+            return task;
+        }
+        self.switch_to_current_priority()?;
+        self.find_next_in_current_priority()
+    }
+}
+
