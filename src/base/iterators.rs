@@ -141,11 +141,13 @@ impl<'a> Iterator for BookingOnDateMut<'a> {
 }
 
 fn demo3() {
-    let all_tasks = [Task::new("task1".to_string(), Priority::Low),
+    let all_tasks = [
+        Task::new("task1".to_string(), Priority::Low),
         Task::new("task2".to_string(), Priority::High),
         Task::new("task3".to_string(), Priority::Medium),
         Task::new("task4".to_string(), Priority::High),
-        Task::new("task5".to_string(), Priority::Low)];
+        Task::new("task5".to_string(), Priority::Low),
+    ];
     let iter = PriorityIterator::new(&all_tasks);
     for item in iter {
         println!("{:?}: {:?}", item.name, item.priority);
@@ -219,4 +221,3 @@ impl<'a> Iterator for PriorityIterator<'a> {
         self.find_next_in_current_priority()
     }
 }
-
