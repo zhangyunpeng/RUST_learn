@@ -2,7 +2,6 @@ use std::ops::Index;
 
 pub fn run() {
     demo2();
-    demo3();
 }
 
 fn demo() {
@@ -60,18 +59,6 @@ fn demo2() {
     for item in bod {
         println!("{:?}", item);
     }
-}
-
-fn demo3() {
-    let mut all_booking = vec![];
-    let booking1 = Booking::new("2026-03-16".to_string(), "guesta".to_string(), 1);
-    let booking2 = Booking::new("2026-03-16".to_string(), "guestb".to_string(), 2);
-    let booking3 = Booking::new("2026-03-20".to_string(), "guestc".to_string(), 3);
-    let booking4 = Booking::new("2026-03-16".to_string(), "guestd".to_string(), 4);
-    all_booking.push(booking1);
-    all_booking.push(booking2);
-    all_booking.push(booking3);
-    all_booking.push(booking4);
 
     let bod = BookingOnDateMut::new("2026-03-16", &mut all_booking);
     for item in bod {
