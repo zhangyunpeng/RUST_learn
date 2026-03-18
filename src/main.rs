@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::colurses::run();
+    learn::base::iterators::run();
 }
