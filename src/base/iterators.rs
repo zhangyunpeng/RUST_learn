@@ -1,7 +1,7 @@
 use std::ops::Index;
 
 pub fn run() {
-    demo3();
+    demo4();
 }
 
 fn demo() {
@@ -219,5 +219,137 @@ impl<'a> Iterator for PriorityIterator<'a> {
         }
         self.switch_to_current_priority()?;
         self.find_next_in_current_priority()
+    }
+}
+
+fn demo4() {
+    let cars = vec![
+        Car::new("make1".to_string(), "model1".to_string(), 6000),
+        Car::new("make2".to_string(), "model2".to_string(), 7000),
+        Car::new("make3".to_string(), "model3".to_string(), 8000),
+        Car::new("make4".to_string(), "model4".to_string(), 9000),
+        Car::new("make5".to_string(), "model5".to_string(), 10000),
+    ];
+    let car_collection = CarCollection::new(cars, (7000, 9000));
+    println!("iter value");
+    for car in car_collection.into_iter() {
+        println!("{:?}", car);
+    }
+
+    let cars = vec![
+        Car::new("make1".to_string(), "model1".to_string(), 6000),
+        Car::new("make2".to_string(), "model2".to_string(), 7000),
+        Car::new("make3".to_string(), "model3".to_string(), 8000),
+        Car::new("make4".to_string(), "model4".to_string(), 9000),
+        Car::new("make5".to_string(), "model5".to_string(), 10000),
+    ];
+    let mut car_collection = CarCollection::new(cars, (7000, 9000));
+    println!("iter ref");
+    for car in &car_collection {
+        println!("{:?}", car);
+    }
+
+    println!("iter ref mut");
+    for car in &mut car_collection {
+        car.price += 1;
+    }
+    for car in &car_collection {
+        println!("{:?}", car);
+    }
+}
+
+#[derive(Debug)]
+struct Car {
+    make: String,
+    model: String,
+    price: u32,
+}
+
+impl Car {
+    fn new(make: String, model: String, price: u32) -> Self {
+        Self { make, model, price }
+    }
+}
+
+struct CarCollection {
+    cars: Vec<Car>,
+    price_range: (u32, u32),
+}
+
+impl CarCollection {
+    fn new(cars: Vec<Car>, price_range: (u32, u32)) -> Self {
+        Self { cars, price_range }
+    }
+}
+
+struct CarCollectionByValue {
+    reminding_cars: std::vec::IntoIter<Car>,
+    price_range: (u32, u32),
+}
+
+impl Iterator for CarCollectionByValue {
+    type Item = Car;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.reminding_cars
+            .find(|car| car.price >= self.price_range.0 && car.price <= self.price_range.1)
+    }
+}
+
+impl IntoIterator for CarCollection {
+    type Item = Car;
+    type IntoIter = CarCollectionByValue;
+    fn into_iter(self) -> Self::IntoIter {
+        CarCollectionByValue {
+            reminding_cars: self.cars.into_iter(),
+            price_range: self.price_range,
+        }
+    }
+}
+
+struct CarCollectionByRef<'a> {
+    reminding_cars: std::slice::Iter<'a, Car>,
+    price_range: (u32, u32),
+}
+
+impl<'a> Iterator for CarCollectionByRef<'a> {
+    type Item = &'a Car;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.reminding_cars
+            .find(|car| car.price >= self.price_range.0 && car.price <= self.price_range.1)
+    }
+}
+
+impl<'a> IntoIterator for &'a CarCollection {
+    type Item = &'a Car;
+    type IntoIter = CarCollectionByRef<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        CarCollectionByRef {
+            reminding_cars: self.cars.iter(),
+            price_range: self.price_range,
+        }
+    }
+}
+
+struct CarCollectionByRefMut<'a> {
+    reminding_cars: std::slice::IterMut<'a, Car>,
+    price_range: (u32, u32),
+}
+
+impl<'a> Iterator for CarCollectionByRefMut<'a> {
+    type Item = &'a mut Car;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.reminding_cars
+            .find(|car| car.price >= self.price_range.0 && car.price <= self.price_range.1)
+    }
+}
+
+impl<'a> IntoIterator for &'a mut CarCollection {
+    type Item = &'a mut Car;
+    type IntoIter = CarCollectionByRefMut<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        CarCollectionByRefMut {
+            reminding_cars: self.cars.iter_mut(),
+            price_range: self.price_range,
+        }
     }
 }
