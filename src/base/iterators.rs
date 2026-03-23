@@ -140,6 +140,7 @@ impl<'a> Iterator for BookingOnDateMut<'a> {
     }
 }
 
+// 为自定义类型实现Iterator
 fn demo3() {
     let all_tasks = [
         Task::new("task1".to_string(), Priority::Low),
@@ -222,6 +223,7 @@ impl<'a> Iterator for PriorityIterator<'a> {
     }
 }
 
+// 为自定义类型实现 IntoIterator
 fn demo4() {
     let cars = vec![
         Car::new("make1".to_string(), "model1".to_string(), 6000),

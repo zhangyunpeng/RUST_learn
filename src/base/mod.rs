@@ -4,6 +4,7 @@ pub mod errors;
 pub mod generics;
 pub mod hashmaps;
 pub mod iterators;
+pub mod iterators_methods;
 pub mod lifetimes;
 pub mod loops;
 pub mod options;

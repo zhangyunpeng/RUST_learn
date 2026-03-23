@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::iterators::run();
+    learn::base::iterators_methods::run();
 }
