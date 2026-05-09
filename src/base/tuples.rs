@@ -40,7 +40,7 @@ fn demo() {
 
     let rcvd_data = (5, "hello", 10);
     match rcvd_data {
-        (a, b, c) if a > 0 && c < 20 => {
+        (a, _, c) if a > 0 && c < 20 => {
             println!("Valid data");
         }
         _ => println!("Invalid data"),

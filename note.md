@@ -180,6 +180,42 @@ Fn -> FnMut -> FnOnce
 闭包遵循Rust 的数据借用、复制和所有权规则  
 闭包作为函数参数时， 如果闭包没有捕获环境变量， 可以直接使用fn，不必使用 Fn
 
+## 迭代器
+### 特征
+Iterator  迭代器特征  
+IntoIterator T类型转换为对应的迭代器特征  
+FromIterator 手机迭代器中的元素生成新的类型
+### 适配器
+1. 消耗适配器 map() filter() skip() position() enumerate()...
+2. 迭代器适配器 foreach() sum() max() count() ...
+
+## 智能指针
+Box::into_raw 消耗Box<T>， 转换为 *mut T , 需要手动管理该 *mut T， Rust不会再自动释放，例如： Box::from_raw，将其转换Box， 由Rust管理
+Box::from_raw 转换*mut T 为 Box<T>  
+
+### Vec<T> 与 Box<[T]>
+Vec<T> 大小动态可调， ```Box<[T]>```大小是固定的   
+``` let v = vec![1;3];let box_v: Box<[i32]> = v.into_boxed_slice(); ```
+
+## Rc<T> 
+已引用计数的方式共享 T 的所有权，T 为不可变数据  
+Rc 单线程  
+实现了Dref 没有实现 DrefMut 
+如果需要mut， 可使用 Rc::get_mut, 必须满足：1 个强引用， 0个弱引用
+### 强引用 vs 弱引用
+强引用：Rc::clone(), Rc::strong_count(),   
+弱引用：Rc::downgrade(), Rc::weak_count(), 不持有数据，可以通过 upgrade() 升级为强引用    
+
+### 内部可变性
+RefCell<T> 单线程使用，运行时违反借用规则会panic， borrow() borrow_mut()   
+Mutex<T> 多线程使用
+RwLock<T> 多线程使用
+
+
+
+
+
+
 
 
 

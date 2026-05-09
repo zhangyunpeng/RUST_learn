@@ -1,17 +1,22 @@
 #![allow(dead_code)]
-pub mod colurses;
-pub mod errors;
-pub mod generics;
-pub mod hashmaps;
-pub mod iterators;
-pub mod iterators_methods;
-pub mod lifetimes;
-pub mod loops;
-pub mod options;
-pub mod results;
-pub mod structs;
-pub mod traits;
-pub mod tuples;
-pub mod val_and_ref;
-pub mod vecdeques;
-pub mod vecs;
+mod colurses;
+mod errors;
+mod generics;
+mod hashmaps;
+mod iterators;
+mod iterators_methods;
+mod lifetimes;
+mod loops;
+mod macros;
+mod options;
+mod pointers;
+mod results;
+mod structs;
+mod traits;
+mod tuples;
+mod val_and_ref;
+mod vecdeques;
+mod vecs;
+
+// Re-export
+pub use macros::run;
