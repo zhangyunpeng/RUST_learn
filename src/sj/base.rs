@@ -58,9 +58,14 @@ fn array_demo() {
     let a: [i32; 5] = [1, 2, 3, 4, 5];
 
     let mut index = String::new();
-    std::io::stdin().read_line(&mut index).expect("Failed to read line");
+    std::io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
 
-    let index:usize = index.trim().parse().expect("Index entered was not a number");
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
     println!(
         "The value of the element at index {} is: {}",
         index, a[index]
@@ -69,7 +74,7 @@ fn array_demo() {
     let a = [0; 5];
     println!("{:?}", a);
 
-    let a: [String;5] = std::array::from_fn(|_|"hello".to_string());
+    let a: [String; 5] = std::array::from_fn(|_| "hello".to_string());
     println!("{:?}", a);
 }
 
@@ -84,11 +89,9 @@ fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
 }
 
 fn create_and_print<T>()
-where T: From<i32> + Display
+where
+    T: From<i32> + Display,
 {
     let a: T = 100.into();
     println!("{}", a);
 }
-
-
-

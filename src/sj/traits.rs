@@ -1,4 +1,3 @@
-
 pub fn run() {
     demo1();
     demo2();
@@ -65,13 +64,12 @@ fn demo1() {
         name: "Sunfei".to_string(),
         university: "XXX".to_string(),
         fav_language: "Rust".to_string(),
-        git_username: "sunface".to_string()
+        git_username: "sunface".to_string(),
     };
 
     // 填空
     println!("{}", comp_sci_student_greeting(&student));
 }
-
 
 struct Pretty(String);
 
