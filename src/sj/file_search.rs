@@ -1,4 +1,3 @@
-
 use std::env;
 use std::fs;
 use std::process;
@@ -13,9 +12,8 @@ pub fn run() {
     println!("Searching for {}", config.query);
     println!("In file {}", config.file_path);
 
-    let contents = fs::read_to_string(&config.file_path)
-        .expect("Something went wrong reading the file");
-
+    let contents =
+        fs::read_to_string(&config.file_path).expect("Something went wrong reading the file");
 
     let data = search(&config.query, &contents);
     println!("{:?}", data);
@@ -36,10 +34,7 @@ struct Config {
 
 impl Config {
     fn new(query: String, file_path: String) -> Self {
-        Self {
-            query,
-            file_path,
-        }
+        Self { query, file_path }
     }
 
     fn build(args: &Vec<String>) -> Result<Config, &'static str> {

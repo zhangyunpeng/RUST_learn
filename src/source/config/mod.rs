@@ -1,8 +1,8 @@
 mod error;
 mod map;
-mod value;
 mod path;
+mod value;
 
 /// Re-export
-pub use error::{Result};
+pub use error::Result;
 pub use map::Map;

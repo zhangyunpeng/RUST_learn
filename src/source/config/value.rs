@@ -1,12 +1,12 @@
-use std::fmt;
-use std::convert::TryInto;
-use std::fmt::Write;
-use serde_core::de::{Deserialize, Deserializer, Visitor};
-use crate::source::config::{Result, Map};
 use crate::source::config::error::{ConfigError, Unexpected};
+use crate::source::config::{Map, Result};
+use serde_core::de::{Deserialize, Deserializer, Visitor};
+use std::convert::TryInto;
+use std::fmt;
+use std::fmt::Write;
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum ValueKind{
+pub enum ValueKind {
     #[default]
     Nil,
     Boolean(bool),
@@ -24,7 +24,8 @@ pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;
 
 impl<T> From<Option<T>> for ValueKind
-where T: Into<Self>
+where
+    T: Into<Self>,
 {
     fn from(v: Option<T>) -> Self {
         match v {
@@ -125,16 +126,18 @@ impl From<f64> for ValueKind {
 }
 
 impl<T> From<Map<String, T>> for ValueKind
-where T: Into<Value>
+where
+    T: Into<Value>,
 {
     fn from(m: Map<String, T>) -> Self {
-        let t = m.into_iter().map(|(k, v)|(k, v.into())).collect();
+        let t = m.into_iter().map(|(k, v)| (k, v.into())).collect();
         Self::Table(t)
     }
 }
 
 impl<T> From<Vec<T>> for ValueKind
-where T: Into<Value>
+where
+    T: Into<Value>,
 {
     fn from(v: Vec<T>) -> Self {
         Self::Array(v.into_iter().map(T::into).collect())
@@ -156,20 +159,19 @@ impl fmt::Display for ValueKind {
                 let mut s = String::new();
                 for (k, v) in table.iter() {
                     write!(s, "{k} => {v}")?;
-                };
+                }
                 write!(f, "{{ {s} }}")
-            },
+            }
             Self::Array(ref array) => {
                 let mut s = String::new();
                 for v in array.iter() {
                     write!(s, "{v}")?;
-                };
+                }
                 write!(f, "[{s}]")
-            },
+            }
         }
     }
 }
-
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Value {
@@ -179,7 +181,8 @@ pub struct Value {
 
 impl Value {
     pub fn new<V>(origin: Option<&String>, kind: V) -> Self
-    where V: Into<ValueKind>
+    where
+        V: Into<ValueKind>,
     {
         Self {
             origin: origin.cloned(),
@@ -203,32 +206,30 @@ impl Value {
             ValueKind::U64(i) => Ok(i != 0),
             ValueKind::U128(i) => Ok(i != 0),
             ValueKind::Float(f) => Ok(f != 0.0),
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "1" | "true" | "on" | "yes" => Ok(true),
-                    "0" | "false" | "off" | "no" => Ok(false),
-                    other => Err(ConfigError::invalid_type(
-                        self.origin.clone(),
-                        Unexpected::Str(other.into()),
-                        "a boolean"
-                    )),
-                }
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "1" | "true" | "on" | "yes" => Ok(true),
+                "0" | "false" | "off" | "no" => Ok(false),
+                other => Err(ConfigError::invalid_type(
+                    self.origin.clone(),
+                    Unexpected::Str(other.into()),
+                    "a boolean",
+                )),
             },
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "a boolean"
+                "a boolean",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "a boolean"
+                "a boolean",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "a boolean"
-            ))
+                "a boolean",
+            )),
         }
     }
 
@@ -239,54 +240,50 @@ impl Value {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::I128(i),
-                    "an signed 64 bit or less integer"
+                    "an signed 64 bit or less integer",
                 )
             }),
-            ValueKind::U64(i) => i.try_into().map_err(|_|{
+            ValueKind::U64(i) => i.try_into().map_err(|_| {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::U64(i),
-                    "an signed 64 bit or less integer"
+                    "an signed 64 bit or less integer",
                 )
             }),
-            ValueKind::U128(i) => i.try_into().map_err(|_|{
+            ValueKind::U128(i) => i.try_into().map_err(|_| {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::U128(i),
-                    "an signed 64 bit or less integer"
+                    "an signed 64 bit or less integer",
                 )
             }),
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "true" | "on" | "yes" => Ok(1),
-                    "false" | "off" | "no" => Ok(0),
-                    s => {
-                        s.parse().map_err(|_| {
-                            ConfigError::invalid_type(
-                                self.origin.clone(),
-                                Unexpected::Str(s.into()),
-                                "an signed 64 bit or less integer"
-                            )
-                        })
-                    }
-                }
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "true" | "on" | "yes" => Ok(1),
+                "false" | "off" | "no" => Ok(0),
+                s => s.parse().map_err(|_| {
+                    ConfigError::invalid_type(
+                        self.origin.clone(),
+                        Unexpected::Str(s.into()),
+                        "an signed 64 bit or less integer",
+                    )
+                }),
             },
             ValueKind::Boolean(b) => Ok(b as i64),
             ValueKind::Float(f) => Ok(f.round() as i64),
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
-               self.origin,
-               Unexpected::Seq,
-               "an integer"
+                self.origin,
+                Unexpected::Seq,
+                "an integer",
             )),
         }
     }
@@ -296,41 +293,39 @@ impl Value {
             ValueKind::I64(i) => Ok(i.into()),
             ValueKind::I128(i) => Ok(i),
             ValueKind::U64(i) => Ok(i.into()),
-            ValueKind::U128(i) => i.try_into().map_err(|_|{
+            ValueKind::U128(i) => i.try_into().map_err(|_| {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::U128(i),
-                    "an signed 128 bit integer"
+                    "an signed 128 bit integer",
                 )
             }),
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "true" | "on" | "yes" => Ok(1),
-                    "false" | "off" | "no" => Ok(0),
-                    s => Err(ConfigError::invalid_type(
-                        self.origin.clone(),
-                        Unexpected::Str(s.into()),
-                        "an signed 128 bit integer"
-                    ))
-                }
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "true" | "on" | "yes" => Ok(1),
+                "false" | "off" | "no" => Ok(0),
+                s => Err(ConfigError::invalid_type(
+                    self.origin.clone(),
+                    Unexpected::Str(s.into()),
+                    "an signed 128 bit integer",
+                )),
             },
             ValueKind::Boolean(b) => Ok(b.into()),
             ValueKind::Float(f) => Ok(f.round() as i128),
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "an integer"
-            ))
+                "an integer",
+            )),
         }
     }
 
@@ -340,56 +335,52 @@ impl Value {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::I64(i),
-                    "an unsigned 64 bit integer"
+                    "an unsigned 64 bit integer",
                 )
             }),
-            ValueKind::I128(i) => i.try_into().map_err(|_|{
+            ValueKind::I128(i) => i.try_into().map_err(|_| {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::I128(i),
-                    "an unsigned 64 bit integer"
+                    "an unsigned 64 bit integer",
                 )
             }),
             ValueKind::U64(i) => Ok(i),
-            ValueKind::U128(i) => i.try_into().map_err(|_|{
+            ValueKind::U128(i) => i.try_into().map_err(|_| {
                 ConfigError::invalid_type(
                     self.origin,
                     Unexpected::U128(i),
-                    "an unsigned 64 bit integer"
+                    "an unsigned 64 bit integer",
                 )
             }),
             ValueKind::Boolean(b) => Ok(b.into()),
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "true" | "on" | "yes" => Ok(1),
-                    "false" | "off" | "no" => Ok(0),
-                    s => {
-                        s.parse().map_err(|_| {
-                            ConfigError::invalid_type(
-                                self.origin.clone(),
-                                Unexpected::Str(s.into()),
-                                "an unsigned 64 bit integer"
-                            )
-                        })
-                    }
-                }
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "true" | "on" | "yes" => Ok(1),
+                "false" | "off" | "no" => Ok(0),
+                s => s.parse().map_err(|_| {
+                    ConfigError::invalid_type(
+                        self.origin.clone(),
+                        Unexpected::Str(s.into()),
+                        "an unsigned 64 bit integer",
+                    )
+                }),
             },
             ValueKind::Float(f) => Ok(f.round() as u64),
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "an integer"
-            ))
+                "an integer",
+            )),
         }
     }
 
@@ -397,54 +388,48 @@ impl Value {
         match self.kind {
             ValueKind::U64(i) => Ok(i.into()),
             ValueKind::U128(i) => Ok(i),
-            ValueKind::I64(i) => {
-                i.try_into().map_err(|_|{
+            ValueKind::I64(i) => i.try_into().map_err(|_| {
+                ConfigError::invalid_type(
+                    self.origin,
+                    Unexpected::I64(i),
+                    "an unsigned 128 bit integer",
+                )
+            }),
+            ValueKind::I128(i) => i.try_into().map_err(|_| {
+                ConfigError::invalid_type(
+                    self.origin,
+                    Unexpected::I128(i),
+                    "an unsigned 128 bit integer",
+                )
+            }),
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "true" | "on" | "yes" => Ok(1),
+                "false" | "off" | "no" => Ok(0),
+                s => s.parse().map_err(|_| {
                     ConfigError::invalid_type(
-                        self.origin,
-                        Unexpected::I64(i),
-                        "an unsigned 128 bit integer"
+                        self.origin.clone(),
+                        Unexpected::Str(s.into()),
+                        "an unsigned 128 bit integer",
                     )
-                })
-            },
-            ValueKind::I128(i) => {
-                i.try_into().map_err(|_|{
-                    ConfigError::invalid_type(
-                        self.origin,
-                        Unexpected::I128(i),
-                        "an unsigned 128 bit integer"
-                    )
-                })
-            },
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "true" | "on" | "yes" => Ok(1),
-                    "false" | "off" | "no" => Ok(0),
-                    s => s.parse().map_err(|_|{
-                        ConfigError::invalid_type(
-                            self.origin.clone(),
-                            Unexpected::Str(s.into()),
-                            "an unsigned 128 bit integer"
-                        )
-                    })
-                }
+                }),
             },
             ValueKind::Boolean(b) => Ok(b.into()),
             ValueKind::Float(f) => Ok(f.round() as u128),
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "an integer"
+                "an integer",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "an integer"
-            ))
+                "an integer",
+            )),
         }
     }
 
@@ -459,29 +444,27 @@ impl Value {
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "an floating point"
+                "an floating point",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "an floating point"
+                "an floating point",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "an floating point"
+                "an floating point",
             )),
-            ValueKind::String(ref s) => {
-                match s.to_lowercase().as_ref() {
-                    "true" | "on" | "yes" => Ok(1.0),
-                    "false" | "off" | "no" => Ok(0.0),
-                    s => Err(ConfigError::invalid_type(
-                        self.origin.clone(),
-                        Unexpected::Str(s.into()),
-                        "an floating point"
-                    ))
-                }
-            }
+            ValueKind::String(ref s) => match s.to_lowercase().as_ref() {
+                "true" | "on" | "yes" => Ok(1.0),
+                "false" | "off" | "no" => Ok(0.0),
+                s => Err(ConfigError::invalid_type(
+                    self.origin.clone(),
+                    Unexpected::Str(s.into()),
+                    "an floating point",
+                )),
+            },
         }
     }
 
@@ -497,18 +480,18 @@ impl Value {
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "s string"
+                "s string",
             )),
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Map,
-                "s string"
+                "s string",
             )),
             ValueKind::Array(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "s string"
-            ))
+                "s string",
+            )),
         }
     }
 
@@ -518,48 +501,48 @@ impl Value {
             ValueKind::Table(_) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "a array"
+                "a array",
             )),
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "a array"
+                "a array",
             )),
             ValueKind::Float(f) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Float(f),
-                "a array"
+                "a array",
             )),
             ValueKind::String(ref s) => Err(ConfigError::invalid_type(
                 self.origin.clone(),
                 Unexpected::Str(s.into()),
-                "a array"
+                "a array",
             )),
             ValueKind::Boolean(b) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Bool(b),
-                "a array"
+                "a array",
             )),
             ValueKind::I64(i) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::I64(i),
-                "a array"
+                "a array",
             )),
             ValueKind::I128(i) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::I128(i),
-                "a array"
+                "a array",
             )),
             ValueKind::U64(u) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::U64(u),
-                "a array"
+                "a array",
             )),
             ValueKind::U128(u) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::U128(u),
-                "a array"
-            ))
+                "a array",
+            )),
         }
     }
 
@@ -569,48 +552,48 @@ impl Value {
             ValueKind::Nil => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Unit,
-                "a table"
+                "a table",
             )),
             ValueKind::String(ref s) => Err(ConfigError::invalid_type(
                 self.origin.clone(),
                 Unexpected::Str(s.into()),
-                "a table"
+                "a table",
             )),
             ValueKind::Boolean(b) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Bool(b),
-                "a table"
+                "a table",
             )),
             ValueKind::Float(f) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Float(f),
-                "a table"
+                "a table",
             )),
             ValueKind::I64(i) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::I64(i),
-                "a table"
+                "a table",
             )),
             ValueKind::I128(i) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::I128(i),
-                "a table"
+                "a table",
             )),
             ValueKind::U64(u) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::U64(u),
-                "a table"
+                "a table",
             )),
             ValueKind::U128(u) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::U128(u),
-                "a table"
+                "a table",
             )),
             ValueKind::Array(_a) => Err(ConfigError::invalid_type(
                 self.origin,
                 Unexpected::Seq,
-                "a table"
-            ))
+                "a table",
+            )),
         }
     }
 }
@@ -787,6 +770,3 @@ impl fmt::Display for Value {
         write!(f, "{}", self.kind)
     }
 }
-
-
-

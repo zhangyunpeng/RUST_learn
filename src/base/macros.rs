@@ -24,7 +24,5 @@ macro_rules! hello {
 pub fn run() {
     hello!("a");
     hello!("zhangyunpeng", "sunshine");
-    hello!(1+2, 3+4);
+    hello!(1 + 2, 3 + 4);
 }
-
-

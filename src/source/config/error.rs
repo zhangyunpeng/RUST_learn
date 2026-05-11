@@ -44,7 +44,7 @@ pub enum ConfigError {
     /// Configuration property was not found.
     NotFound(String),
     /// Configuration path can not be parsed.
-    PathParse{ cause: Box<dyn Error + Send + Sync>},
+    PathParse { cause: Box<dyn Error + Send + Sync> },
     /// Configuration could not ne parsed from file.
     FileParse {
         /// The URI used to access file(if not loaded from a String).
@@ -93,7 +93,7 @@ impl ConfigError {
     pub fn invalid_type(
         origin: Option<String>,
         unexpected: Unexpected,
-        expected: &'static str
+        expected: &'static str,
     ) -> Self {
         Self::Type {
             origin,
@@ -122,17 +122,13 @@ impl ConfigError {
                 unexpected,
                 expected,
                 ..
-            }  => Self::Type {
+            } => Self::Type {
                 origin,
                 unexpected,
                 expected,
                 key: Some(key.into()),
             },
-            Self::At {
-                error,
-                origin,
-                ..
-            } => Self::At {
+            Self::At { error, origin, .. } => Self::At {
                 error,
                 origin,
                 key: Some(key.into()),
@@ -161,18 +157,14 @@ impl ConfigError {
                 origin,
                 unexpected,
                 expected,
-                key
+                key,
             } => Self::Type {
                 origin,
                 unexpected,
                 expected,
                 key: Some(concat(key)),
             },
-            Self::At {
-                error,
-                origin,
-                key
-            } => Self::At {
+            Self::At { error, origin, key } => Self::At {
                 error,
                 origin,
                 key: Some(concat(key)),
@@ -182,7 +174,7 @@ impl ConfigError {
                 error: Box::new(other),
                 origin: None,
                 key: Some(concat(None)),
-            }
+            },
         }
     }
 
@@ -209,12 +201,12 @@ impl fmt::Display for ConfigError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             ConfigError::Forzen => write!(f, "Configuration is forzen"),
-            ConfigError::PathParse{ref cause} => write!(f, "{cause}"),
+            ConfigError::PathParse { ref cause } => write!(f, "{cause}"),
             ConfigError::Message(ref s) => write!(f, "{s}"),
             ConfigError::Foreign(ref err) => write!(f, "{err}"),
             ConfigError::NotFound(ref key) => {
                 write!(f, "missing configuration key {key:?}")
-            },
+            }
             ConfigError::Type {
                 ref origin,
                 ref unexpected,
@@ -229,11 +221,11 @@ impl fmt::Display for ConfigError {
                     write!(f, " in ({origin})")?;
                 };
                 Ok(())
-            },
+            }
             ConfigError::At {
                 ref error,
                 ref origin,
-                ref key
+                ref key,
             } => {
                 write!(f, "{error}")?;
                 if let Some(ref key) = *key {
@@ -243,17 +235,14 @@ impl fmt::Display for ConfigError {
                     write!(f, " in ({origin})")?;
                 };
                 Ok(())
-            },
-            ConfigError::FileParse {
-                ref uri,
-                ref cause
-            } => {
+            }
+            ConfigError::FileParse { ref uri, ref cause } => {
                 write!(f, "{cause}")?;
                 if let Some(ref uri) = *uri {
                     write!(f, " in uri `{uri}`")?;
                 };
                 Ok(())
-            },
+            }
         }
     }
 }
