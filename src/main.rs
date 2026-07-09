@@ -1,3 +1,3 @@
 fn main() {
-    learn::sj::run();
+    learn::base::runtime::run()
 }

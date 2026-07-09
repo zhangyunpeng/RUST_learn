@@ -62,13 +62,14 @@ fn demo2() {
  * zip() 将两个迭代器压缩到一起， 形成 Iterator<Item = (ValueFromA, ValueFromB)> 新的迭代器
  */
 fn demo3() {
-    let arr = vec![1, 2, 3];
+    let arr = [1, 2, 3];
     let v2: Vec<_> = arr.iter().map(|x| x + 1).collect();
     assert_eq!(v2, vec![2, 3, 4]);
 
     let names = vec!["Bob", "Frank", "Ferris"];
     let ages = vec![18, 19, 20];
-    let m: HashMap<_, _> = names.into_iter().zip(ages.into_iter()).collect();
+    // let m: HashMap<_, _> = names.into_iter().zip(ages.into_iter()).collect();
+    let m: HashMap<_, _> = names.into_iter().zip(ages).collect();
     println!("{:?}", m);
 
     let arr = vec![1, 2, 3, 4];
@@ -96,14 +97,10 @@ fn demo() {
     println!("{:?}", arr);
 
     let arr = vec![1, 2];
-    match IntoIterator::into_iter(&arr) {
-        mut iter => loop {
-            match iter.next() {
-                Some(x) => println!("{}", x),
-                None => break,
-            }
-        },
-    };
+    let mut iter = IntoIterator::into_iter(&arr);
+    for x in iter {
+        println!("{}", x);
+    }
 
     let mut arr = vec![1, 2];
     for i in &mut arr {

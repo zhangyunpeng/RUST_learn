@@ -38,8 +38,7 @@ fn demo_sort() {
 }
 
 fn demo() {
-    let mut v = Vec::new();
-    v.push(1);
+    let mut v = [1];
 
     let mut v = vec![1, 2, 3];
     v.push(4);

@@ -86,7 +86,7 @@ fn demo_fn() {
 
 fn exec_fn<F>(f: F)
 where
-    F: Fn(String) -> (),
+    F: Fn(String),
 {
     f("world".to_string());
 }
@@ -140,10 +140,10 @@ where
 }
 
 fn demo_fn_once() {
-    let x = vec![1, 2, 3];
+    let x = [1, 2, 3];
     fn_once(|z| z == x.len());
 
-    let x = vec![1, 2, 3];
+    let x = [1, 2, 3];
     fn_once2(|z| z == x.len());
 }
 

@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use std::num::ParseIntError;
+use std::str::FromStr;
 
 pub fn run() {
     demo_as();
@@ -10,7 +10,6 @@ pub fn run() {
     demo4();
     demo5();
 }
-
 
 fn demo5() {
     use std::str::FromStr;
@@ -29,9 +28,11 @@ struct Point {
 impl FromStr for Point {
     type Err = ParseIntError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let coords: Vec<&str> = s.trim_matches(|p| p == '(' || p == ')')
+        let coords: Vec<&str> = s
+            .trim_matches(|p| p == '(' || p == ')')
             .split(',')
-            .map(|x|x.trim()).collect();
+            .map(|x| x.trim())
+            .collect();
         let x = coords[0].parse::<i32>()?;
         let y = coords[1].parse::<i32>()?;
         Ok(Point { x, y })
@@ -50,7 +51,7 @@ fn demo4() {
     assert_eq!(format!("{}", origin), "The point is (0, 0)");
 
     let p = "(3, 4)".parse::<Point>();
-    assert_eq!(p.unwrap(), Point{ x: 3, y: 4} );
+    assert_eq!(p.unwrap(), Point { x: 3, y: 4 });
 
     println!("Success!")
 }
@@ -66,18 +67,16 @@ fn demo3() {
 
 #[allow(overflowing_literals)]
 fn demo1() {
-    assert_eq!(u8::MAX, 255);
-    let v = 1000 as u8;
+    let v = 100_u8;
     println!("{:?}", v);
 }
 
 fn demo2() {
-    let arr: [u64; 13] = [0;13];
+    let arr: [u64; 13] = [0; 13];
     assert_eq!(std::mem::size_of_val(&arr), 8 * 13);
     let a: *const [u64] = &arr;
-    let b = a as *const [u8];
     unsafe {
-        println!("{}", std::mem::size_of_val(&*b));
+        println!("{}", std::mem::size_of_val(&*a));
     }
 }
 
@@ -109,9 +108,7 @@ fn demo2() {
  *    长转为不定长，因此 [T;3] 被转换称 [T] ，也就是数组切片，它实现了 Index 特征，因此最终我们可以通过 index 访问到
  *    对应的元素
  */
-fn demo_dot() {
-
-}
+fn demo_dot() {}
 
 /*
  * 首先检查值调用， value 类型是 &T， 同时 clone 方法签名是 &T : fn clone(&T) -> T， 因此可以进行值方法调用，再加
@@ -126,9 +123,8 @@ fn do_stuff<T: Clone>(value: &T) {
  * fn clone(&&T) -> &T, 编译器发现 &T 实现了 Clone， 因此推出 cloned 也是 &T 类型
  */
 fn do_stuff2<T>(value: &T) {
-    let _cloned = value.clone();
+    let _cloned = value;
 }
-
 
 /*
  * 隐式类型转换
@@ -145,8 +141,7 @@ fn demo() {
 trait Trait {}
 fn foo<X: Trait>(t: X) {}
 
-impl<'a> Trait for &'a i32 {}
-
+impl Trait for &i32 {}
 
 /*
  * std::conver::TryInto 转换
@@ -168,8 +163,8 @@ fn demo_try_into() {
  */
 fn demo_as() {
     let a = 3.1 as u8;
-    let b = 100_u8 as u8;
-    let c = 'a' as u8;
+    let b = 100_u8;
+    let c = 'a';
     println!("a = {}, b = {}, c = {}", a, b, c);
 
     let mut values = vec![1, 2, 3];

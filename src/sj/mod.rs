@@ -5,6 +5,8 @@ mod closure;
 #[allow(unused)]
 mod closure_fn;
 #[allow(unused)]
+mod convert;
+#[allow(unused)]
 mod enums;
 #[allow(unused)]
 mod file_search;
@@ -18,8 +20,6 @@ mod lifetime;
 mod traits;
 #[allow(unused)]
 mod vecs;
-#[allow(unused)]
-mod convert;
 
 pub fn run() {
     println!("Running sj start======");
