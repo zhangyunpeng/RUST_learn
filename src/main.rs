@@ -1,3 +1,3 @@
 fn main() {
-    learn::base::runtime::run()
+    learn::base::syncs::run();
 }
