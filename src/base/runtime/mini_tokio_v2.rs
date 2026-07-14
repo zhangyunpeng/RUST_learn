@@ -1,8 +1,8 @@
+use futures_util::task;
+use futures_util::task::ArcWake;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex, mpsc};
 use std::task::{Context, Poll};
-use futures_util::task;
-use futures_util::task::ArcWake;
 
 pub struct MiniTokio {
     schedule: mpsc::Receiver<Arc<Task>>,
@@ -38,27 +38,27 @@ impl TaskFuture {
 }
 
 impl Task {
-    fn schedule(self: &Arc<Self>) {
-        let _ = self.sender.send(self.clone());
-    }
-
-    fn spawn<F>(f: F, sender: &mpsc::Sender<Arc<Task>>)
+    fn spawn<F>(future: F, sender: &mpsc::Sender<Arc<Task>>)
     where
         F: Future<Output = ()> + Send + 'static,
     {
-        let task_future = TaskFuture::new(f);
-        let task = Arc::new(Task{
+        let task_future = TaskFuture::new(future);
+        let task = Arc::new(Task {
             task_future: Mutex::new(task_future),
             sender: sender.clone(),
         });
         let _ = sender.send(task);
     }
 
-    fn poll(self: &Arc<Self>) {
+    fn poll(self: &Arc<Task>) {
         let waker = task::waker(self.clone());
         let mut cx = Context::from_waker(&waker);
         let mut future = self.task_future.try_lock().unwrap();
-        let _ = future.poll(&mut cx);
+        future.poll(&mut cx);
+    }
+
+    fn schedule(self: &Arc<Self>) {
+        self.sender.send(self.clone()).unwrap();
     }
 }
 
@@ -90,6 +90,6 @@ impl MiniTokio {
 
 impl Default for MiniTokio {
     fn default() -> Self {
-        Self::new()
+        MiniTokio::new()
     }
 }
