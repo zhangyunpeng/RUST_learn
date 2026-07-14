@@ -1,4 +1,5 @@
-use learn::base::runtime::mini_tokio::{Delay, MiniTokio};
+use learn::base::runtime::mini_tokio::MiniTokio;
+use learn::base::runtime::self_futures::delay::Delay;
 use std::time::Duration;
 
 // #[tokio::main]
@@ -9,7 +10,7 @@ use std::time::Duration;
 // }
 
 fn main() {
-    let mut mini = MiniTokio::new();
+    let mut mini = MiniTokio::default();
     mini.spawn(Delay::new(Duration::from_millis(100)));
     mini.spawn(Delay::new(Duration::from_millis(10)));
     mini.spawn(Delay::new(Duration::from_millis(1)));

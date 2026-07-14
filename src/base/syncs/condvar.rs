@@ -33,7 +33,7 @@ pub fn demo_wait_while() {
 
     let (lock, cvar) = &*pair;
     let _guard = cvar
-        .wait_while(lock.lock().unwrap(), |pending| *pending == true)
+        .wait_while(lock.lock().unwrap(), |pending| *pending)
         .unwrap();
 }
 
@@ -55,7 +55,7 @@ pub fn demo_wait_timeout() {
             .wait_timeout(started, Duration::from_millis(100))
             .unwrap();
         started = result.0;
-        if *started == true {
+        if *started {
             break;
         }
     }

@@ -1,6 +1,7 @@
 mod demo;
-mod future;
 pub mod mini_tokio;
+pub mod mini_tokio_v2;
+pub mod self_futures;
 
 async fn task1() {
     println!("任务1开始");

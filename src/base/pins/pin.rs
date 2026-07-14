@@ -15,10 +15,10 @@ pub fn demo() {
     assert_eq!(v, vec![1, 2, 3, 4]);
 
     //  自引用！Unpin 类型，Pin 锁死，无法取出裸引用
-    let foo = Foo {
+    let f = Foo {
         _marker: PhantomPinned,
     };
-    let boxed = Box::pin(foo);
+    let boxed = Box::pin(f);
     let _pinned = boxed;
     // 下面这行编译报错：Foo 没有实现 Unpin，不能调用 get_mut
     // let inner = pinned.get_mut();
