@@ -1,0 +1,17 @@
+server:
+  addr: "127.0.0.1:8080"
+  shutdown_timeout: 10
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 0
+  password: ""
+
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  database: "test_db"
+  user: "root"
+  password: "123456"
+  max_conn: 10

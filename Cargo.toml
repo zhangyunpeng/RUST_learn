@@ -10,13 +10,21 @@ xlsxwriter = "0.6.1"
 futures-util = "0.3"
 axum = "0.8.9"
 tokio = { version = "1.52.3", features = ["full"] }
-sqlx = { version = "0.9.0", features = ["mysql", "runtime-tokio"] }
 tower_governor = "0.8.0"
-tower-http = { version = "0.7.0", features = ["trace"] }
+tower-http = { version = "0.7.0", features = ["trace", "tracing"] }
 serde = { version = "1.0.228", features = ["derive"] }
 mini-redis = "0.4"
 bytes = "1"
 futures = "0.3.32"
+tokio-stream = "0.1.18"
+serde_json = { version = "1.0.150" }
+tokio-util = { version = "0.7", features = ["full"] }
+signal-hook = "0.3"
+signal-hook-tokio = { version = "0.3", features = ["futures-v0_3"] }
+thiserror = "1.0.69"
+config = { version = "0.15.25", features = ["yaml"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [features]
 default = []
