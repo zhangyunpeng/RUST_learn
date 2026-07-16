@@ -1,10 +1,18 @@
-use learn::{conf, global, routers};
-use learn::utils::error::{
-    base::GlobalAppError as Error
-};
+use learn::global::error::base::GlobalAppError as Error;
+use learn::{conf, instance, routers};
 
 fn main() {
-    global::rt().block_on(async {
+    // 1. 加载配置
+    conf::load_config();
+
+    // 2. 初始化全局Runtime（OnceLock保证只创建一次）
+    instance::rt();
+
+    // 3. 【同步主线程初始化MySQL】此时还没进入block_on，允许使用rt.block_on
+    instance::init_mysql_pool();
+
+    // 4. 启动异步服务，全程只会读取已就绪的连接池，不会再执行初始化逻辑
+    instance::rt().block_on(async {
         if let Err(e) = run_server().await {
             eprintln!("服务启动错误： {:?}", e)
         }
@@ -12,9 +20,7 @@ fn main() {
 }
 
 async fn run_server() -> Result<(), Error> {
-    // 初始化日志输出
     tracing_subscriber::fmt()
-        // .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .with_env_filter(tracing_subscriber::EnvFilter::new("info"))
         .init();
 
@@ -24,3 +30,4 @@ async fn run_server() -> Result<(), Error> {
     axum::serve(listener, router).await?;
     Ok(())
 }
+
