@@ -30,4 +30,3 @@ async fn run_server() -> Result<(), Error> {
     axum::serve(listener, router).await?;
     Ok(())
 }
-

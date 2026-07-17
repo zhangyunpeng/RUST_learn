@@ -14,3 +14,4 @@ pub mod instance;
 pub mod routers;
 
 pub mod model;
+pub mod service;

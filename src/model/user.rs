@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlPool};
 // use bcrypt::{hash, DEFAULT_COST};
 use crate::global::error::user::UserError;
@@ -12,7 +12,7 @@ pub struct User {
     pub username: String,
     pub password: String,
     pub name: String,
-    pub age: Option<u8>,
+    pub age: u8,
     pub phone: String,
     pub email: String,
     pub status: i8,
@@ -33,33 +33,33 @@ pub struct CreateUserDTO {
     pub email: String,
 }
 
-    pub async fn create(pool: &MySqlPool, data: CreateUserDTO) -> Result<u64, UserError> {
-        let user_id = format!("u_{}", uuid::Uuid::new_v4());
-        // let pwd_hash = match hash(&data.password, DEFAULT_COST) {
-        //     Ok(pwd_hash) => pwd_hash,
-        //     Err(e) => return Err(GlobalAppError::UserModel(UserDefault(e.to_string())))
-        // };
-        let result = sqlx::query(
-            r#"
+pub async fn create(pool: &MySqlPool, data: CreateUserDTO) -> Result<u64, UserError> {
+    let user_id = format!("u_{}", uuid::Uuid::new_v4());
+    // let pwd_hash = match hash(&data.password, DEFAULT_COST) {
+    //     Ok(pwd_hash) => pwd_hash,
+    //     Err(e) => return Err(GlobalAppError::UserModel(UserDefault(e.to_string())))
+    // };
+    let result = sqlx::query(
+        r#"
             INSERT INTO user (user_id, username, password, name, age, phone, email)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             "#,
-        )
-            .bind(user_id)
-            .bind(data.username)
-            .bind(data.password)
-            .bind(data.name)
-            .bind(data.age)
-            .bind(data.phone)
-            .bind(data.email)
-            .execute(pool)
-            .await?;
+    )
+    .bind(user_id)
+    .bind(data.username)
+    .bind(data.password)
+    .bind(data.name)
+    .bind(data.age)
+    .bind(data.phone)
+    .bind(data.email)
+    .execute(pool)
+    .await?;
 
-        Ok(result.last_insert_id() as u64)
-    }
+    Ok(result.last_insert_id() as u64)
+}
 
-    pub async fn user_by_user_id(pool: &MySqlPool, user_id: &str) -> Result<Option<User>, UserError> {
-        let user = sqlx::query_as::<_, User>(
+pub async fn user_by_user_id(pool: &MySqlPool, user_id: &str) -> Result<Option<User>, UserError> {
+    let user = sqlx::query_as::<_, User>(
             r#"
             SELECT id, user_id, username, password, name, age, phone, email, status, create_time, update_time, deleted
             FROM user
@@ -69,7 +69,5 @@ pub struct CreateUserDTO {
             .bind(user_id)
             .fetch_optional(pool)
             .await?;
-        Ok(user)
-    }
-
-
+    Ok(user)
+}

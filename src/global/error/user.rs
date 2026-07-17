@@ -11,7 +11,8 @@ pub enum UserError {
     #[error("用户默认错误{0}")]
     UserDefault(String),
     #[error("数据库异常： {0}")]
-    MysqlError(#[from] sqlx::Error),}
+    MysqlError(#[from] sqlx::Error),
+}
 
 impl UserError {
     pub fn code(&self) -> u32 {

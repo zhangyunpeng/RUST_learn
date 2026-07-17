@@ -1,8 +1,8 @@
-// use crate::global::error::{base::GlobalAppError};
 use crate::global::response::{ApiResult, Response};
+use crate::service::user::user_info as userInfoService;
 use axum::Json;
-use serde::Serialize;
-use crate::{instance, model};
+use axum::extract::Query;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct UserInfo {
@@ -11,21 +11,39 @@ pub struct UserInfo {
     age: u8,
 }
 
-pub async fn user_info() -> ApiResult<Json<Response<model::user::User>>> {
-    // let age = 0;
-    // if age == 0 {
-    //     return Err(GlobalAppError::UserError(UserError::default(
-    //         "自定义错误内容",
-    //     )));
-    // }
+#[derive(Deserialize)]
+pub struct UserInfoReq {
+    pub user_id: String,
+}
 
-    let user_id = "u_10001".to_string();
-    let data = model::user::user_by_user_id(instance::mysql_pool(), &user_id).await?;
+#[derive(Serialize)]
+pub struct UserInfoResponse {
+    id: u64,
+    user_id: String,
+    username: String,
+    name: String,
+    age: u8,
+    phone: String,
+    email: String,
+    status: i8,
+    deleted: i8,
+}
 
-    // let result = UserInfo {
-    //     user_id: "111".to_string(),
-    //     name: "sunshine".to_string(),
-    //     age: 18,
-    // };
-    Ok(Json(Response::success(0, data)))
+pub async fn user_info(
+    Query(req): Query<UserInfoReq>,
+) -> ApiResult<Json<Response<UserInfoResponse>>> {
+    let user_id = req.user_id;
+    let data = userInfoService::user_info(&user_id).await?;
+    let resp = UserInfoResponse {
+        id: data.id,
+        user_id: data.user_id,
+        username: data.username,
+        name: data.name,
+        age: data.age,
+        phone: data.phone,
+        email: data.email,
+        status: data.status,
+        deleted: data.deleted,
+    };
+    Ok(Json(Response::success(0, Some(resp))))
 }
